@@ -2,84 +2,149 @@ package com.apps.irdhilmc.fisicaproyect;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
+import com.apps.irdhilmc.fisicaproyect.adapters.FormulasAdapter;
+import com.apps.irdhilmc.fisicaproyect.entiites.Formula;
+import com.apps.irdhilmc.fisicaproyect.temas.Mru;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, FormulasAdapter.OnItemFormulaClickListener {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.title)
+    TextView title;
+    @BindView(R.id.txtVelocidad)
+    TextInputEditText txtVelocidad;
+    @BindView(R.id.contentVelocidad)
+    TextInputLayout contentVelocidad;
+    @BindView(R.id.txtDistancia)
+    TextInputEditText txtDistancia;
+    @BindView(R.id.contentDistancia)
+    TextInputLayout contentDistancia;
+    @BindView(R.id.txtTiempo)
+    TextInputEditText txtTiempo;
+    @BindView(R.id.contentTiempo)
+    TextInputLayout contentTiempo;
+
+    @BindView(R.id.nav_view)
+    NavigationView navView;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
+
+    int operacion = 0;
+
+
+    @BindView(R.id.txtResultado)
+    TextInputEditText txtResultado;
+    @BindView(R.id.contentResultado)
+    TextInputLayout contentResultado;
+    @BindView(R.id.content_mru)
+    CardView contentMru;
+    @BindView(R.id.title_mruv)
+    TextView titleMruv;
+    @BindView(R.id.content_mruv)
+    CardView contentMruv;
+    @BindView(R.id.btnCalcular)
+    FloatingActionButton btnCalcular;
+    @BindView(R.id.btnLimpiar)
+    FloatingActionButton btnLimpiar;
+    @BindView(R.id.rvListaFormula)
+    RecyclerView rvListaFormula;
+    @BindView(R.id.txtVelocidadInicial)
+    TextInputEditText txtVelocidadInicial;
+    @BindView(R.id.contentVelocidadInicial)
+    TextInputLayout contentVelocidadInicial;
+    @BindView(R.id.txtDistanciaMruv)
+    TextInputEditText txtDistanciaMruv;
+    @BindView(R.id.contentDistanciaMruv)
+    TextInputLayout contentDistanciaMruv;
+
+
+    FormulasAdapter formulasAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         setOtherSeetingss();
 
-
-        double aceleracion = 0;
-        double altura = 0;
-
-        double tiempo = 0.0;
-        double distancia = 0.0;
-        double velocidad = 0.0;
-
-        calcularVelocidad(distancia, tiempo);
-        calcularTiempo(distancia, distancia);
-        calcularDistancia(velocidad, tiempo);
-
-        double resultado = 0.0;
-
-
     }
 
-    private void calcularDistancia(double espacio, double tiempo) {
+    private void setupRVFormulas(int tipoFormula) {
+        Log.d(TAG, "setupRVFormulas: ");
 
+        List<Formula> formulaList = new ArrayList<>();
+        switch (tipoFormula) {
+
+            case 1:
+                formulaList.addAll(Formula.LlenarListaMRUFormulas());
+                break;
+            case 2:
+//                formulaList.addAll(Formula.LlenarListaMRUVFormulas());
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+
+        }
+
+        if (formulasAdapter == null) {
+            formulasAdapter = new FormulasAdapter(formulaList, this);
+            rvListaFormula.setLayoutManager(new LinearLayoutManager(this));
+            rvListaFormula.setAdapter(formulasAdapter);
+        } else {
+            rvListaFormula.setAdapter(formulasAdapter);
+        }
     }
 
-    private void calcularTiempo(double espacio, double tiempo) {
-
-    }
-
-    private void calcularVelocidad(double espacio, double tiempo) {
-
-    }
 
     private void setOtherSeetingss() {
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.btnCalcular);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        navView.setNavigationItemSelectedListener(this);
+        limpiarImputs();
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -113,9 +178,14 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_option_mru) {
+            setupRVFormulas(1);
+
+
+        } else if (id == R.id.nav_option_mruv) {
+            setupRVFormulas(2);
+//            showLayoutOpcion(false, 2, contentMru);
+//            showLayoutOpcion(true, 2, contentMruv);
 
         } else if (id == R.id.nav_slideshow) {
 
@@ -127,8 +197,140 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void showLayoutOpcion(boolean showLayout, int operacionSelected, int codigoFormula, CardView content) {
+        if (showLayout) {
+            content.setVisibility(View.VISIBLE);
+        } else {
+            content.setVisibility(View.GONE);
+        }
+        operacion = operacionSelected;
+        switch (codigoFormula) {
+            case 1:
+                ocultarImput(contentDistancia);
+                verImputs(contentVelocidad, contentTiempo);
+                break;
+            case 2:
+                ocultarImput(contentTiempo);
+                verImputs(contentDistancia, contentVelocidad);
+
+                break;
+            case 3:
+                ocultarImput(contentVelocidad);
+                verImputs(contentDistancia, contentTiempo);
+
+                break;
+        }
+
+    }
+
+    private void verImputs(TextInputLayout textInputLayout, TextInputLayout textInputLayout2) {
+        textInputLayout.setVisibility(View.VISIBLE);
+        textInputLayout2.setVisibility(View.VISIBLE);
+
+    }
+
+    private void ocultarImput(TextInputLayout inputLayout) {
+        inputLayout.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.btnCalcular)
+    public void onViewClicked() {
+        errors = 0;
+        switch (operacion) {
+            case 1:
+                calcularMRU();
+                break;
+            case 2:
+                calcularMRUV();
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+        }
+
+    }
+
+    private void calcularMRUV() {
+
+    }
+
+
+    private void calcularMRU() {
+
+        double tiempo = 0;
+        double distancia = 0;
+        double velocidad = 0;
+
+        validarImput(txtVelocidad);
+        validarImput(txtDistancia);
+        validarImput(txtTiempo);
+
+        if (errors == 0) {
+            velocidad = Double.parseDouble(txtVelocidad.getText().toString());
+            distancia = Double.parseDouble(txtDistancia.getText().toString());
+            tiempo = Double.parseDouble(txtTiempo.getText().toString());
+            if (distancia <= 0) {
+                showResultado(Mru.getInstance().calcularDistancia(velocidad, tiempo), "La Distancia es:", "Metros");
+            } else {
+
+            }
+            if (velocidad <= 0) {
+                showResultado(Mru.getInstance().calcularVelocidad(distancia, tiempo), "La Velocidad es:", "Metros/segundos");
+            } else if (tiempo <= 0) {
+                showResultado(Mru.getInstance().calcularTiempo(distancia, velocidad), "El Tiempo es:", "Segundos");
+            }
+        }
+
+    }
+
+    private void showResultado(double result, String textHint, String magnitud) {
+        contentResultado.setVisibility(View.VISIBLE);
+        contentResultado.setHint(textHint);
+        txtResultado.setText(String.format("%s %s", String.valueOf(result), magnitud));
+    }
+
+    int errors = 0;
+
+    private void validarImput(TextInputEditText inputEditText) {
+        if (inputEditText.getText().toString().equals("")) {
+            errors++;
+            inputEditText.setError("Ingrese Este valor");
+        }
+    }
+
+
+    @OnClick(R.id.btnLimpiar)
+    public void onViewLimpiarClickedLimpiar() {
+        limpiarImputs();
+    }
+
+    private void limpiarImputs() {
+        txtDistancia.setText("0");
+        txtTiempo.setText("0");
+        txtVelocidad.setText("0");
+        hideResultado();
+    }
+
+    private void hideResultado() {
+        contentResultado.setVisibility(View.GONE);
+        txtResultado.setText("0");
+
+    }
+
+    @Override
+    public void onClickItem(Formula formula) {
+        Log.d(TAG, "onClickItem: ");
+        toolbar.setTitle("Movimiento Rectilineó Uniforme");
+        showLayoutOpcion(true, formula.getPositionFormula(), formula.getCodigoFormula(), contentMru);
+        showLayoutOpcion(false, formula.getPositionFormula(), formula.getCodigoFormula(), contentMruv);
     }
 }

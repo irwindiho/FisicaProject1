@@ -8,4 +8,6 @@
     <string name="movimiento_rectil_neo_uniforme">Movimiento Rectilíneo Uniforme</string>
     <string name="ingrese_velocidad">Ingrese Velocidad</string>
     <string name="calcular">Calcular</string>
+    <string name="movimiento_rectilin_o_uniforme_variado">Movimiento Rectilinéo Uniforme Variado</string>
+    <string name="todo">TODO</string>
 </resources>
